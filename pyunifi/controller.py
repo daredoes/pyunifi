@@ -499,3 +499,59 @@ class Controller(object):
         """
         client = self.get_client(mac)['_id']
         return self._api_update('rest/user/' + client, {'name': alias})
+
+    def stat_voucher(self, create_time=None):
+        """
+        List Vouchers
+        -------------
+        :param create_time: Unix timestamp in seconds
+        :return: an array of hotspot voucher objects
+        """
+        return self._api_read('stat/voucher', {'create_time': create_time} if create_time else {})
+
+    def create_voucher(self, minutes_of_use, count_of_vouchers=1, quota=0, note=None, upload_limit_kbps=None,
+                       down_limit_kbps=None, data_limit_mega_bytes=None):
+        """
+        Create voucher(s)
+        -----------------
+        :param minutes_of_use: minutes the voucher is valid after activation (expiration time)
+        :param count_of_vouchers: number of vouchers to create, default value is 1
+        :param quota: single-use or multi-use vouchers, value '0' is for multi-use, '1' is for single-use,
+                      'n' is for multi-use n times
+        :param note: note text to add to voucher when printing
+        :param upload_limit_kbps: upload speed limit in kbps
+        :param down_limit_kbps: download speed limit in kbps
+        :param data_limit_mega_bytes: data transfer limit in MB
+        :return: dict
+        NOTES: please use the stat_voucher() method/function to retrieve the newly created voucher(s) by create_time
+        """
+        params = {
+            'cmd': 'create-voucher',
+            'expire': minutes_of_use,
+            'n': count_of_vouchers,
+            'quota': quota,
+        }
+
+        if note:
+            params['note'] = note
+
+        if upload_limit_kbps:
+            params['up'] = upload_limit_kbps
+
+        if down_limit_kbps:
+            params['down'] = down_limit_kbps
+
+        if data_limit_mega_bytes:
+            params['bytes'] = data_limit_mega_bytes
+
+        return self._api_write('cmd/hotspot', params)
+
+    def revoke_voucher(self, voucher_id):
+        """
+        :param voucher_id: 24 char string; _id of the voucher to revoke
+        :return: boolean?
+        """
+        params = {'cmd': 'delete-voucher'}
+        if voucher_id:
+            params['_id'] = voucher_id
+        return self._api_read('cmd/hotspot', params)
