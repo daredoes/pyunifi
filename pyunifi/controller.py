@@ -636,6 +636,18 @@ class Controller(object):
 
         return self._api_read('stat/alluser', params)
 
+    def list_guests(self, hours_to_go_back=8760):
+        """
+        List guest devices
+        :param hours_to_go_back: hours to go back (default is 8760 hours or 1 year)
+        :return: an array of guest device objects with valid access
+        """
+        params = {
+            'within': hours_to_go_back
+        }
+
+        return self._api_read('stat/guest', params)
+
     def get_events(self):
         """Return a list of all Events."""
         return self._api_read('stat/event')
@@ -746,12 +758,24 @@ class Controller(object):
         Add/modify/remove a client-device name
         :param user_id: id of the client-device to be modified
         :param name: name to be applied to the client-device
-               NOTES:
-                   when name is empty or not set, the existing name for the client-device will be removed
+        NOTES:
+        * when name is empty or not set, the existing name for the client-device will be removed
         :return: True on success
         """
         params = {
             'name': name,
+        }
+        return self._api_write('upd/user/{}'.format(user_id), params)
+
+    def set_client_usergroup(self, user_id, group_id):
+        """
+        Assign client device to another group
+        :param user_id: id of the client-device to be modified
+        :param group_id: id of the user group to assign user to
+        :return: True on success
+        """
+        params = {
+            'usergroup_id': group_id,
         }
         return self._api_write('upd/user/{}'.format(user_id), params)
 
