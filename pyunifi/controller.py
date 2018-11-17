@@ -176,6 +176,478 @@ class Controller(object):
             'end': int(endtime - 3600) * 1000}
         return self._write(self._api_url() + 'stat/report/hourly.site', params)
 
+    def get_statistics_hourly(self, start=None, end=None):
+        """
+        Hourly site stats method
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :return: an array of hourly stats objects for the current site
+        NOTES:
+         * defaults to the past 7*24 hours
+         * "bytes" are no longer returned with controller version 4.9.1 and later
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (7 * 24 * 3600 * 1000)
+        attributes = [
+            'bytes',
+            'wan-tx_bytes',
+            'wan-rx_bytes',
+            'wlan_bytes',
+            'num_sta',
+            'lan-num_sta',
+            'wlan-num_sta',
+            'time'
+        ]
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+        }
+        return self._api_read('stat/report/hourly.site', params)
+
+    def get_ap_statistics_hourly(self, start=None, end=None, mac=None):
+        """
+        Hourly site stats method for a single access point or all access points
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param mac: AP MAC address to return stats for
+        :return: an array of hourly stats objects for the current site
+        NOTES:
+         * defaults to the past 7*24 hours
+         * "bytes" are no longer returned with controller version 4.9.1 and later
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (7 * 24 * 3600 * 1000)
+        attributes = [
+            'bytes',
+            'wan-tx_bytes',
+            'wan-rx_bytes',
+            'wlan_bytes',
+            'num_sta',
+            'lan-num_sta',
+            'wlan-num_sta',
+            'time'
+        ]
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+            'mac': mac
+        }
+        return self._api_read('stat/report/hourly.ap', params)
+
+    def get_statistics_5minutes(self, start=None, end=None):
+        """
+        5 minutes site stats method
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :return: an array of 5-minute stats objects for the current site
+        NOTES:
+         * defaults to the past 12 hours
+         * this function/method is only supported on controller versions 5.5.* and later
+         * make sure that the retention policy for 5 minutes stats is set to the correct value in
+         * the controller settings
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (12 * 3600 * 1000)
+        attributes = [
+            'bytes',
+            'wan-tx_bytes',
+            'wan-rx_bytes',
+            'wlan_bytes',
+            'num_sta',
+            'lan-num_sta',
+            'wlan-num_sta',
+            'time'
+        ]
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+        }
+        return self._api_read('stat/report/5minutes.site', params)
+
+    def get_ap_statistics_5minutes(self, start=None, end=None, mac=None):
+        """
+        5 minutes site stats method for a single access point or all access points
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param mac: AP MAC address to return stats for
+        :return: an array of 5-minute stats objects for the current site
+        NOTES:
+         * defaults to the past 12 hours
+         * this function/method is only supported on controller versions 5.5.* and later
+         * make sure that the retention policy for 5 minutes stats is set to the correct value in
+         * the controller settings
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (12 * 3600 * 1000)
+        attributes = [
+            'bytes',
+            'wan-tx_bytes',
+            'wan-rx_bytes',
+            'wlan_bytes',
+            'num_sta',
+            'lan-num_sta',
+            'wlan-num_sta',
+            'time'
+        ]
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+            'mac': mac
+        }
+        return self._api_read('stat/report/5minutes.ap', params)
+
+    def get_statistics_daily(self, start=None, end=None):
+        """
+        Daily site stats method
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :return: an array of daily stats objects for the current site
+        NOTES:
+         * defaults to the past 52*7*24 hours
+         * "bytes" are no longer returned with controller version 4.9.1 and later
+         * make sure that the retention policy for 5 minutes stats is set to the correct value in
+         * the controller settings
+        """
+        end = end if end else time.time() - (time.time() % 3600) * 1000
+        start = start if start else end - (52 * 7 * 24 * 3600 * 1000)
+        attributes = [
+            'bytes',
+            'wan-tx_bytes',
+            'wan-rx_bytes',
+            'wlan_bytes',
+            'num_sta',
+            'lan-num_sta',
+            'wlan-num_sta',
+            'time'
+        ]
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+        }
+        return self._api_read('stat/report/daily.site', params)
+
+    def get_ap_statistics_daily(self, start=None, end=None, mac=None):
+        """
+        Daily site stats method for a single access point or all access points
+
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param mac: AP MAC address to return stats for
+        :return: an array of daily stats objects for the current site
+        NOTES:
+         * defaults to the past 52*7*24 hours
+         * "bytes" are no longer returned with controller version 4.9.1 and later
+         * make sure that the retention policy for 5 minutes stats is set to the correct value in
+         * the controller settings
+        """
+        end = end if end else time.time() - (time.time() % 3600) * 1000
+        start = start if start else end - (52 * 7 * 24 * 3600 * 1000)
+        attributes = [
+            'bytes',
+            'wan-tx_bytes',
+            'wan-rx_bytes',
+            'wlan_bytes',
+            'num_sta',
+            'lan-num_sta',
+            'wlan-num_sta',
+            'time'
+        ]
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+            'mac': mac
+        }
+        return self._api_read('stat/report/daily.ap', params)
+
+    def get_user_statistics_5minutes(self, mac, start=None, end=None, attributes=None):
+        """
+        5 minutes stats method for a single user/client device
+        :param mac: MAC address of user/client device to return stats for
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param attributes: array containing attributes (strings) to be returned, valid values are:
+               rx_bytes, tx_bytes, signal, rx_rate, tx_rate, rx_retries, tx_retries, rx_packets, tx_packets
+               default is ['rx_bytes', 'tx_bytes']
+        NOTES:
+        * defaults to the past 12 hours
+        * only supported with UniFi controller versions 5.8.X and higher
+        * make sure that the retention policy for 5 minutes stats is set to the correct value in
+          the controller settings
+        * make sure that "Clients Historical Data" has been enabled in the UniFi controller settings in the Maintenance section
+        :return: an array of 5-minute stats objects for a single user/client device
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (12 * 3600 * 1000)
+        attributes = ['time'] + attributes if attributes else ['time', 'rx_bytes', 'tx_bytes']
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+            'mac': mac,
+        }
+        return self._api_read('stat/report/5minutes.user', params)
+
+    def get_user_statistics_hourly(self, mac, start=None, end=None, attributes=None):
+        """
+        Hourly stats method for a single user/client device
+        :param mac: MAC address of user/client device to return stats for
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param attributes: array containing attributes (strings) to be returned, valid values are:
+               rx_bytes, tx_bytes, signal, rx_rate, tx_rate, rx_retries, tx_retries, rx_packets, tx_packets
+               default is ['rx_bytes', 'tx_bytes']
+        NOTES:
+        * defaults to the past 7*24 hours
+        * only supported with UniFi controller versions 5.8.X and higher
+        * make sure that "Clients Historical Data" has been enabled in the UniFi controller settings in the Maintenance section
+        :return: an array of hourly stats objects for a single user/client device
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (7 * 24 * 3600 * 1000)
+        attributes = ['time'] + attributes if attributes else ['time', 'rx_bytes', 'tx_bytes']
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+            'mac': mac,
+        }
+        return self._api_read('stat/report/hourly.user', params)
+
+    def get_user_statistics_daily(self, mac, start=None, end=None, attributes=None):
+        """
+        Daily stats method for a single user/client device
+        :param mac: MAC address of user/client device to return stats for
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param attributes: array containing attributes (strings) to be returned, valid values are:
+               rx_bytes, tx_bytes, signal, rx_rate, tx_rate, rx_retries, tx_retries, rx_packets, tx_packets
+               default is ['rx_bytes', 'tx_bytes']
+        NOTES:
+        * defaults to the past 52*7*24 hours
+        * only supported with UniFi controller versions 5.8.X and higher
+        * make sure that "Clients Historical Data" has been enabled in the UniFi controller settings in the Maintenance section
+        :return: an array of daily stats objects for a single user/client device
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (52 * 7 * 24 * 3600 * 1000)
+        attributes = ['time'] + attributes if attributes else ['time', 'rx_bytes', 'tx_bytes']
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+            'mac': mac,
+        }
+        return self._api_read('stat/report/daily.user', params)
+
+    def get_gateway_statistics_5minutes(self, start=None, end=None, attributes=None):
+        """
+        5 minutes stats method for the gateway belonging to the current site
+        :param mac: MAC address of user/client device to return stats for
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param attributes: array containing attributes (strings) to be returned, valid values are:
+               mem, cpu, loadavg_5, lan-rx_errors, lan-tx_errors, lan-rx_bytes,
+               lan-tx_bytes, lan-rx_packets, lan-tx_packets, lan-rx_dropped, lan-tx_dropped
+               default is ['time', 'mem', 'cpu', 'loadavg_5']
+        NOTES:
+        * defaults to the past 12 hours
+        * this function/method is only supported on controller versions 5.5.* and later
+        * make sure that the retention policy for 5 minutes stats is set to the correct value in
+          the controller settings
+        * requires a USG
+        :return: an array of 5-minute stats objects for the gateway belonging to the current site
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (12 * 3600 * 1000)
+        attributes = ['time'] + attributes if attributes else ['time', 'mem', 'cpu', 'loadavg_5']
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+        }
+        return self._api_read('stat/report/5minutes.gw', params)
+
+    def get_gateway_statistics_hourly(self, start=None, end=None, attributes=None):
+        """
+        Hourly stats method for the gateway belonging to the current site
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param attributes: array containing attributes (strings) to be returned, valid values are:
+               mem, cpu, loadavg_5, lan-rx_errors, lan-tx_errors, lan-rx_bytes,
+               lan-tx_bytes, lan-rx_packets, lan-tx_packets, lan-rx_dropped, lan-tx_dropped
+               default is ['time', 'mem', 'cpu', 'loadavg_5']
+        NOTES:
+        * defaults to the past 7*24 hours
+        * requires a USG
+        :return: an array of hourly stats objects for the gateway belonging to the current site
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (7 * 24 * 3600 * 1000)
+        attributes = ['time'] + attributes if attributes else ['time', 'mem', 'cpu', 'loadavg_5']
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+        }
+        return self._api_read('stat/report/hourly.gw', params)
+
+    def get_gateway_statistics_daily(self, start=None, end=None, attributes=None):
+        """
+        Daily stats method for the gateway belonging to the current site
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param attributes: array containing attributes (strings) to be returned, valid values are:
+               mem, cpu, loadavg_5, lan-rx_errors, lan-tx_errors, lan-rx_bytes,
+               lan-tx_bytes, lan-rx_packets, lan-tx_packets, lan-rx_dropped, lan-tx_dropped
+               default is ['time', 'mem', 'cpu', 'loadavg_5']
+        NOTES:
+        * defaults to the past 52*7*24 hours
+        * requires a USG
+        :return: an array of daily stats objects for the gateway belonging to the current site
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (52 * 7 * 24 * 3600 * 1000)
+        attributes = ['time'] + attributes if attributes else ['time', 'mem', 'cpu', 'loadavg_5']
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+        }
+        return self._api_read('stat/report/daily.gw', params)
+
+    def get_statistics_speedtest(self, start=None, end=None):
+        """
+        Method to fetch speed test results
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        NOTES:
+        * defaults to the past 24 hours
+        * requires a USG
+        :return: an array of speed test result objects
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (24 * 3600 * 1000)
+        attributes = ['xput_download', 'xput_upload', 'latency', 'time']
+        params = {
+            'start': start,
+            'end': end,
+            'attrs': attributes,
+        }
+        return self._api_read('stat/report/archive.speedtest', params)
+
+    def get_statistics_ips_events(self, start=None, end=None, limit=10000):
+        """
+        Method to fetch IPS/IDS event
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param limit: Maximum number of events to return, defaults to 10000
+        NOTES:
+        * defaults to the past 24 hours
+        * requires a USG
+        * supported in UniFi controller versions 5.9.X and higher
+        :return: an array of IPS/IDS event objects
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (24 * 3600 * 1000)
+        params = {
+            'start': start,
+            'end': end,
+            '_limit': limit,
+        }
+        return self._api_read('stat/ips/event', params)
+
+    def get_statistics_sessions(self, start=None, end=None, mac=None, client_type='all'):
+        """
+        Show all login sessions
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+        :param mac: client MAC address to return sessions for (can only be used when start and end are also provided)
+        :param client_type: client type to return sessions for, can be 'all', 'guest' or 'user'; default value is 'all'
+        NOTES:
+        * defaults to the past 7*24 hours
+        :return: an array of login session objects for all devices or a single device
+
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (7 * 24 * 3600 * 1000)
+        params = {
+            'start': start,
+            'end': end,
+            'type': client_type,
+        }
+        if mac:
+            params['mac'] = mac
+        return self._api_read('stat/session', params)
+
+    def get_latest_client_sessions(self, mac, limit=5):
+        """
+        Show latest 'n' login sessions for a single client device
+        :param mac: client MAC address
+        :param limit: maximum number of sessions to get (default value is 5)
+        :return: an array of latest login session objects for given client device
+        """
+        params = {
+            'mac': mac,
+            '_limit': limit,
+            '_sort': '-assoc_time'
+        }
+        return self._api_read('stat/session', params)
+
+    def get_statistics_authorizations(self, start=None, end=None):
+        """
+        Show all authorizations
+        :param start: Unix timestamp in milliseconds
+        :param end: Unix timestamp in milliseconds
+
+        NOTES:
+        * defaults to the past 7*24 hours
+        :return: an array of authorization objects
+
+        """
+        end = end if end else time.time() * 1000
+        start = start if start else end - (7 * 24 * 3600 * 1000)
+        params = {
+            'start': start,
+            'end': end,
+        }
+
+        return self._api_read('stat/authorization', params)
+
+    def get_statistics_all_users(self, hours_to_go_back=8760):
+        """
+        List all client devices ever connected to the site
+        :param hours_to_go_back: hours to go back (default is 8760 hours or 1 year)
+        :return: an array of client device objects
+        NOTES:
+        * <hours_to_go_back> is only used to select clients that were online within that period,
+          the returned stats per client are all-time totals, irrespective of the value of <hours_to_go_back>
+        """
+        params = {
+            'type': 'all',
+            'conn': 'all',
+            'within': hours_to_go_back
+        }
+
+        return self._api_read('stat/alluser', params)
+
+    def list_guests(self, hours_to_go_back=8760):
+        """
+        List guest devices
+        :param hours_to_go_back: hours to go back (default is 8760 hours or 1 year)
+        :return: an array of guest device objects with valid access
+        """
+        params = {
+            'within': hours_to_go_back
+        }
+
+        return self._api_read('stat/guest', params)
+
     def get_events(self):
         """Return a list of all Events."""
         return self._api_read('stat/event')
@@ -241,6 +713,72 @@ class Controller(object):
         params['mac'] = target_mac
         return self._run_command(command, params, mgr)
 
+    def create_user(self, mac, user_group_id, name=None, note=None):
+        """
+        Create a new user/client-device
+        :param mac: client MAC address
+        :param user_group_id: _id value for the user group the new user/client-device should belong to which
+        can be obtained from the output of list_usergroups()
+        :param name: name to be given to the new user/client-device
+        :param note: note to be applied to the new user/client-device
+        :return: an array with a single object containing details of the new user/client-device on success,
+         else return false
+        """
+        params = {
+            'mac': mac,
+            'usergroup_id': user_group_id,
+        }
+        if name:
+            params['name'] = name
+
+        if note:
+            params['note'] = note
+            params['noted'] = True
+
+        return self._api_write('group/user', {'data': params})
+
+    def set_client_note(self, user_id, note=None):
+        """
+        Add/modify/remove a client-device note
+        :param user_id: id of the client-device to be modified
+        :param note: note to be applied to the client-device
+               NOTES:
+                   when note is empty or not set, the existing note for the client-device will be removed and "noted"
+                   attribute set to false
+        :return: True on success
+        """
+        params = {
+            'noted': True if note else False,
+            'note': note
+        }
+        return self._api_write('upd/user/{}'.format(user_id), params)
+
+    def set_client_name(self, user_id, name=None):
+        """
+        Add/modify/remove a client-device name
+        :param user_id: id of the client-device to be modified
+        :param name: name to be applied to the client-device
+        NOTES:
+        * when name is empty or not set, the existing name for the client-device will be removed
+        :return: True on success
+        """
+        params = {
+            'name': name,
+        }
+        return self._api_write('upd/user/{}'.format(user_id), params)
+
+    def set_client_usergroup(self, user_id, group_id):
+        """
+        Assign client device to another group
+        :param user_id: id of the client-device to be modified
+        :param group_id: id of the user group to assign user to
+        :return: True on success
+        """
+        params = {
+            'usergroup_id': group_id,
+        }
+        return self._api_write('upd/user/{}'.format(user_id), params)
+
     def create_site(self, desc='desc'):
         """Create a new site.
 
@@ -272,6 +810,14 @@ class Controller(object):
         :param mac: the MAC address of the client to disconnect.
         """
         return self._mac_cmd(mac, 'kick-sta')
+
+    def forget_clients(self, macs):
+        """Forgets a client or clients.
+
+        :param macs: array of client MAC addresses
+        :return: True on success
+        """
+        return self._run_command('forget-sta', {'macs': macs})
 
     def restart_ap(self, mac):
         """Restart an access point (by MAC).
@@ -499,3 +1045,59 @@ class Controller(object):
         """
         client = self.get_client(mac)['_id']
         return self._api_update('rest/user/' + client, {'name': alias})
+
+    def stat_voucher(self, create_time=None):
+        """
+        List Vouchers
+        -------------
+        :param create_time: Unix timestamp in seconds
+        :return: an array of hotspot voucher objects
+        """
+        return self._api_read('stat/voucher', {'create_time': create_time} if create_time else {})
+
+    def create_voucher(self, minutes_of_use, count_of_vouchers=1, quota=0, note=None, upload_limit_kbps=None,
+                       down_limit_kbps=None, data_limit_mega_bytes=None):
+        """
+        Create voucher(s)
+        -----------------
+        :param minutes_of_use: minutes the voucher is valid after activation (expiration time)
+        :param count_of_vouchers: number of vouchers to create, default value is 1
+        :param quota: single-use or multi-use vouchers, value '0' is for multi-use, '1' is for single-use,
+                      'n' is for multi-use n times
+        :param note: note text to add to voucher when printing
+        :param upload_limit_kbps: upload speed limit in kbps
+        :param down_limit_kbps: download speed limit in kbps
+        :param data_limit_mega_bytes: data transfer limit in MB
+        :return: dict
+        NOTES: please use the stat_voucher() method/function to retrieve the newly created voucher(s) by create_time
+        """
+        params = {
+            'cmd': 'create-voucher',
+            'expire': minutes_of_use,
+            'n': count_of_vouchers,
+            'quota': quota,
+        }
+
+        if note:
+            params['note'] = note
+
+        if upload_limit_kbps:
+            params['up'] = upload_limit_kbps
+
+        if down_limit_kbps:
+            params['down'] = down_limit_kbps
+
+        if data_limit_mega_bytes:
+            params['bytes'] = data_limit_mega_bytes
+
+        return self._api_write('cmd/hotspot', params)
+
+    def revoke_voucher(self, voucher_id):
+        """
+        :param voucher_id: 24 char string; _id of the voucher to revoke
+        :return: boolean?
+        """
+        params = {'cmd': 'delete-voucher'}
+        if voucher_id:
+            params['_id'] = voucher_id
+        return self._api_read('cmd/hotspot', params)
